@@ -2,7 +2,36 @@
 # print "processes per user" bar chart
 # source: blog.sleeplessbeastie.eu/2014/11/25/how-to-create-simple-bar-charts-in-terminal-using-awk/
 # Debian/GNU awk: /usr/bin/awk -> /etc/alternatives/awk -> /usr/bin/gawk
+if test -t 1; then
+    # color steps
+    cstep1="\033[32m"
+    cstep2="\033[33m"
+    cstep3="\033[31m"
+    cstepc="\033[0m"
 
+
+    ncolors=$(tput colors)
+
+    if test -n "$ncolors" && test $ncolors -ge 8; then
+        echo "support colors"
+        bold="$(tput bold)"
+        underline="$(tput smul)"
+        standout="$(tput smso)"
+        normal="$(tput sgr0)"
+        black="$(tput setaf 0)"
+        red="$(tput setaf 1)"
+        green="$(tput setaf 2)"
+        yellow="$(tput setaf 3)"
+        blue="$(tput setaf 4)"
+        magenta="$(tput setaf 5)"
+        cyan="$(tput setaf 6)"
+        white="$(tput setaf 7)"
+    else
+        echo "no color support"
+    fi
+else
+    echo "no colors"
+fi
 # get usernames
 IFS=
 user_processes=`cat $1`
@@ -19,12 +48,6 @@ echo "vmax:$vmax"
 # range of the bar graph
 dmin=1
 dmax=80-5
-
-# color steps
-cstep1="\033[32m"
-cstep2="\033[33m"
-cstep3="\033[31m"
-cstepc="\033[0m"
 
 # generate output
 echo "$user_processes" | awk -v dmin="$dmin" -v dmax="$dmax" \
